@@ -816,6 +816,28 @@
             gap: 16px;
         }
 
+        /* Investment Style Chart */
+        .style-chart-wrap {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            padding: 24px;
+        }
+
+        .style-chart {
+            height: 400px;
+            position: relative;
+        }
+
+        .style-legend {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
         .trend-card {
             padding: 16px;
             background: var(--surface);
@@ -1089,9 +1111,8 @@
                     </div>
                 </div>
                 <div class="manager-info">
-                    <div class="manager-label">基金经理</div>
-                    <div class="manager-name">被动管理 · 无需择时</div>
-                    <p class="manager-text">跟踪中证红利低波动指数，透明稳定，规则驱动，无人为干预。</p>
+                    <div class="manager-label">策略特点</div>
+                    <p class="manager-text">完全复制中证红利低波动指数，选取高分红、低波动股票组合。费率低（0.60%/年）、透明度高、风格稳定，熊市防御性极强。</p>
                 </div>
             </div>
 
@@ -1118,9 +1139,8 @@
                     </div>
                 </div>
                 <div class="manager-info">
-                    <div class="manager-label">基金经理</div>
-                    <div class="manager-name">杨梦 · 博道基金量化投资总监</div>
-                    <p class="manager-text">双均衡多因子框架，结合基本面与量价因子，传统与AI模型并用，管理规模超100亿。</p>
+                    <div class="manager-label">经理背景</div>
+                    <p class="manager-text">经济学硕士，2011年起从事量化研究，2017年加入博道基金。管理规模超100亿。"双均衡多因子框架"：基本面+量价因子并重，传统模型与AI模型并行。在5-6%跟踪误差下最大化信息比率，持仓500+只，换手率~300%。</p>
                 </div>
             </div>
 
@@ -1147,9 +1167,8 @@
                     </div>
                 </div>
                 <div class="manager-info">
-                    <div class="manager-label">基金经理</div>
-                    <div class="manager-name">徐彦 · 大成基金首席权益投资官</div>
-                    <p class="manager-text">从业超17年，深度价值投资，低换手率，专注基本面，不参与泡沫，追求长期稳健复利。</p>
+                    <div class="manager-label">经理背景</div>
+                    <p class="manager-text">复旦大学管理学硕士，2006年入行，2007年加入大成基金，从业超17年。深度价值投资，基于长期现金流折现（DCF）选股。自上而下把握时代方向，自下而上研究行业空间、核心竞争力、管理团队。单一行业不超过15%，低换手率（<100%），不参与泡沫，不追风不跟风。</p>
                 </div>
             </div>
         </div>
@@ -1337,6 +1356,23 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Investment Style Positioning -->
+        <div class="section">
+            <div class="section-header">
+                <h2>投资风格定位</h2>
+            </div>
+            <div class="style-chart-wrap">
+                <div class="style-chart">
+                    <canvas id="styleChart"></canvas>
+                </div>
+                <div class="style-legend">
+                    <div class="legend-item"><div class="legend-dot red"></div>红利低波 ETF</div>
+                    <div class="legend-item"><div class="legend-dot blue"></div>博道远航 A</div>
+                    <div class="legend-item"><div class="legend-dot green"></div>大成睿享 A</div>
+                </div>
+            </div>
         </div>
 
         <!-- Fund Features -->
@@ -1583,6 +1619,80 @@
                     },
                     x: {
                         grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Investment Style Scatter Chart
+        const styleCtx = document.getElementById('styleChart').getContext('2d');
+        new Chart(styleCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: '红利低波 ETF',
+                        data: [{ x: 7.68, y: 10.52 }], // volatility vs return
+                        backgroundColor: 'rgba(248, 113, 113, 0.8)',
+                        borderColor: '#f87171',
+                        pointRadius: 20,
+                        pointHoverRadius: 24,
+                    },
+                    {
+                        label: '博道远航 A',
+                        data: [{ x: 23.65, y: 11.27 }],
+                        backgroundColor: 'rgba(96, 165, 250, 0.8)',
+                        borderColor: '#60a5fa',
+                        pointRadius: 20,
+                        pointHoverRadius: 24,
+                    },
+                    {
+                        label: '大成睿享 A',
+                        data: [{ x: 11.47, y: 11.13 }],
+                        backgroundColor: 'rgba(45, 212, 168, 0.8)',
+                        borderColor: '#2dd4a8',
+                        pointRadius: 20,
+                        pointHoverRadius: 24,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#14171e',
+                        borderColor: '#252a36',
+                        borderWidth: 1,
+                        padding: 12,
+                        callbacks: {
+                            label: ctx => `${ctx.dataset.label}\n波动率: ${ctx.parsed.x}%\n年化收益: ${ctx.parsed.y}%`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '波动率（%）←低              高→',
+                            color: '#666666',
+                            font: { size: 12 }
+                        },
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        min: 0,
+                        max: 30,
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: '年化收益率（%）',
+                            color: '#666666',
+                            font: { size: 12 }
+                        },
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        min: 8,
+                        max: 14,
                     }
                 }
             }
