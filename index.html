@@ -509,6 +509,44 @@
             --text-muted: #6b7280;
         }
 
+        body.light .header-hero::before {
+            background: url('hero-bg-light.png') center top / cover no-repeat;
+        }
+
+        body.light .header-hero::after {
+            background:
+                linear-gradient(
+                    to right,
+                    rgba(245, 246, 248, 1) 0%,
+                    rgba(245, 246, 248, 0.3) 8%,
+                    transparent 20%
+                ),
+                linear-gradient(
+                    to left,
+                    rgba(245, 246, 248, 1) 0%,
+                    rgba(245, 246, 248, 0.3) 8%,
+                    transparent 20%
+                ),
+                linear-gradient(
+                    to bottom,
+                    rgba(245, 246, 248, 0.2) 0%,
+                    rgba(245, 246, 248, 0.1) 20%,
+                    rgba(245, 246, 248, 0.4) 50%,
+                    rgba(245, 246, 248, 0.8) 75%,
+                    rgba(245, 246, 248, 1) 100%
+                );
+        }
+
+        body.light .header-left h1 {
+            color: #1a1e27;
+            text-shadow: 0 2px 20px rgba(255, 255, 255, 0.8);
+        }
+
+        body.light .header-left .subtitle {
+            color: rgba(26, 30, 39, 0.8);
+            text-shadow: 0 1px 10px rgba(255, 255, 255, 0.8);
+        }
+
         /* Tweaks Panel */
         .tweaks-toggle {
             position: fixed;
@@ -986,7 +1024,11 @@
             }
 
             .header-hero::before {
-                background: url('hero-bg.png') center bottom / auto 100% no-repeat;
+                background: url('hero-bg.png') center top / cover no-repeat;
+            }
+
+            body.light .header-hero::before {
+                background: url('hero-bg-light.png') center bottom / auto 100% no-repeat;
             }
 
             .header-left {
