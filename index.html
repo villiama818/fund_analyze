@@ -1679,12 +1679,22 @@
         let chartInstances = {};
 
         // Update chart colors when theme changes
+        function getChartGridColor() {
+            const newColors = getThemeColors();
+            return newColors.grid;
+        }
+
         function updateChartColors() {
             const newColors = getThemeColors();
-            const gridColor = newColors.grid;
 
+            // Update Chart defaults
+            Chart.defaults.color = newColors.tick;
+            Chart.defaults.plugins.tooltip.backgroundColor = newColors.tooltip;
+            Chart.defaults.plugins.tooltip.borderColor = newColors.tooltipBorder;
+
+            // Update each chart
             Object.values(chartInstances).forEach(chart => {
-                // Update grid color for all scales
+                const gridColor = newColors.grid;
                 if (chart.config.type === 'radar') {
                     chart.options.scales.r.grid.color = gridColor;
                     chart.options.scales.r.angleLines.color = gridColor;
@@ -1696,7 +1706,7 @@
                         chart.options.scales.x.grid.color = gridColor;
                     }
                 }
-                chart.update('none');
+                chart.update();
             });
         }
 
@@ -1752,8 +1762,6 @@
         Chart.defaults.plugins.tooltip.backgroundColor = themeColors.tooltip;
         Chart.defaults.plugins.tooltip.borderColor = themeColors.tooltipBorder;
         Chart.defaults.plugins.tooltip.borderWidth = 1;
-
-        const chartGridColor = themeColors.grid;
 
         // Net Value Trend Chart
         const netValueCtx = document.getElementById('netValueChart').getContext('2d');
@@ -1826,7 +1834,7 @@
                 },
                 scales: {
                     y: {
-                        grid: { color: chartGridColor },
+                        grid: { color: getChartGridColor() },
                         ticks: { callback: v => v.toFixed(2) }
                     },
                     x: {
@@ -1878,7 +1886,7 @@
                 },
                 scales: {
                     y: {
-                        grid: { color: chartGridColor },
+                        grid: { color: getChartGridColor() },
                         ticks: { callback: v => v }
                     },
                     x: {
@@ -1943,7 +1951,7 @@
                             color: '#666666',
                             font: { size: 12 }
                         },
-                        grid: { color: chartGridColor },
+                        grid: { color: getChartGridColor() },
                         min: 0,
                         max: 30,
                     },
@@ -1954,7 +1962,7 @@
                             color: '#666666',
                             font: { size: 12 }
                         },
-                        grid: { color: chartGridColor },
+                        grid: { color: getChartGridColor() },
                         min: 8,
                         max: 14,
                     }
@@ -2003,8 +2011,8 @@
                         beginAtZero: true,
                         max: 100,
                         ticks: { display: false },
-                        grid: { color: chartGridColor },
-                        angleLines: { color: chartGridColor },
+                        grid: { color: getChartGridColor() },
+                        angleLines: { color: getChartGridColor() },
                         pointLabels: { font: { size: 11 } }
                     }
                 },
