@@ -1675,11 +1675,37 @@
     </div>
 
     <script>
+        // Chart instances storage
+        let chartInstances = {};
+
+        // Update chart colors when theme changes
+        function updateChartColors() {
+            const newColors = getThemeColors();
+            const gridColor = newColors.grid;
+
+            Object.values(chartInstances).forEach(chart => {
+                // Update grid color for all scales
+                if (chart.config.type === 'radar') {
+                    chart.options.scales.r.grid.color = gridColor;
+                    chart.options.scales.r.angleLines.color = gridColor;
+                } else {
+                    if (chart.options.scales.y) {
+                        chart.options.scales.y.grid.color = gridColor;
+                    }
+                    if (chart.options.scales.x) {
+                        chart.options.scales.x.grid.color = gridColor;
+                    }
+                }
+                chart.update('none');
+            });
+        }
+
         // Theme Toggle
         function toggleTheme() {
             document.body.classList.toggle('light');
             const label = document.getElementById('theme-label');
             label.textContent = document.body.classList.contains('light') ? 'Switch to Dark' : 'Switch to Light';
+            updateChartColors();
         }
 
         function changeTheme(theme) {
@@ -1690,6 +1716,7 @@
                 document.body.classList.remove('light');
                 document.getElementById('theme-label').textContent = 'Switch to Light';
             }
+            updateChartColors();
         }
 
         // Tweaks Panel
@@ -1730,7 +1757,7 @@
 
         // Net Value Trend Chart
         const netValueCtx = document.getElementById('netValueChart').getContext('2d');
-        new Chart(netValueCtx, {
+        chartInstances.netValue = new Chart(netValueCtx, {
             type: 'line',
             data: {
                 labels: ['2020 Q1', '2020 Q2', '2020 Q3', '2020 Q4', '2021 Q1', '2021 Q2', '2021 Q3', '2021 Q4', '2022 Q1', '2022 Q2', '2022 Q3', '2022 Q4', '2023 Q1', '2023 Q2', '2023 Q3', '2023 Q4', '2024 Q1', '2024 Q2', '2024 Q3', '2024 Q4', '2025 Q1', '2025 Q2', '2025 Q3', '2025 Q4', '2026 Q1', '2026 Q2'],
@@ -1812,7 +1839,7 @@
 
         // Risk Metrics Chart
         const riskCtx = document.getElementById('riskChart').getContext('2d');
-        new Chart(riskCtx, {
+        chartInstances.risk = new Chart(riskCtx, {
             type: 'bar',
             data: {
                 labels: ['年度波动率', '风险收益比', '最大回撤(绝对值)'],
@@ -1863,7 +1890,7 @@
 
         // Investment Style Scatter Chart
         const styleCtx = document.getElementById('styleChart').getContext('2d');
-        new Chart(styleCtx, {
+        chartInstances.style = new Chart(styleCtx, {
             type: 'scatter',
             data: {
                 datasets: [
@@ -1937,7 +1964,7 @@
 
         // Radar Chart
         const radarCtx = document.getElementById('radarChart').getContext('2d');
-        new Chart(radarCtx, {
+        chartInstances.radar = new Chart(radarCtx, {
             type: 'radar',
             data: {
                 labels: ['累计收益', '稳定性', '低波动', '抗回撤', '夏普比率'],
